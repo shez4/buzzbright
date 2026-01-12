@@ -19,10 +19,10 @@ import {
   People,
   AccessTime,
   RequestQuote,
-  TrendingUp,
+  // TrendingUp,
   Schedule,
   CheckCircle,
-  Warning
+  // Warning
 } from '@mui/icons-material';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { AuthContext } from '../../context/AuthContext';

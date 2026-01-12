@@ -32,7 +32,7 @@ const Sidebar = ({ open, onClose }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, isManager, isAdmin } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   const menuItems = [
     { text: 'Dashboard', icon: <Dashboard />, path: '/dashboard', roles: ['admin', 'manager', 'staff'] },

@@ -1,24 +1,18 @@
 import React from 'react';
-import { Box, Typography, Paper } from '@mui/material';
-import { Contacts } from '@mui/icons-material';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import ClientList from './ClientList';
+import ClientForm from './ClientForm';
+import ClientDetail from './ClientDetail';
 
 const Clients = () => {
   return (
-    <Box>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Client Management
-      </Typography>
-
-      <Paper sx={{ p: 4, textAlign: 'center' }}>
-        <Contacts sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
-        <Typography variant="h6" gutterBottom>
-          Client & Contact Management
-        </Typography>
-        <Typography color="text.secondary">
-          Coming soon: Complete client management system.
-        </Typography>
-      </Paper>
-    </Box>
+    <Routes>
+      <Route index element={<ClientList />} />
+      <Route path="new" element={<ClientForm />} />
+      <Route path=":id" element={<ClientDetail />} />
+      <Route path=":id/edit" element={<ClientForm />} />
+      <Route path="*" element={<Navigate to="/clients" replace />} />
+    </Routes>
   );
 };
 

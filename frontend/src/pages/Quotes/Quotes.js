@@ -1,24 +1,18 @@
 import React from 'react';
-import { Box, Typography, Paper } from '@mui/material';
-import { RequestQuote } from '@mui/icons-material';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import QuoteList from './QuoteList';
+import QuoteForm from './QuoteForm';
+import QuoteDetail from './QuoteDetail';
 
 const Quotes = () => {
   return (
-    <Box>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Quotes Management
-      </Typography>
-
-      <Paper sx={{ p: 4, textAlign: 'center' }}>
-        <RequestQuote sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
-        <Typography variant="h6" gutterBottom>
-          Quote Creation & Tracking
-        </Typography>
-        <Typography color="text.secondary">
-          Coming soon: Quote management system.
-        </Typography>
-      </Paper>
-    </Box>
+    <Routes>
+      <Route index element={<QuoteList />} />
+      <Route path="new" element={<QuoteForm />} />
+      <Route path=":id" element={<QuoteDetail />} />
+      <Route path=":id/edit" element={<QuoteForm />} />
+      <Route path="*" element={<Navigate to="/quotes" replace />} />
+    </Routes>
   );
 };
 

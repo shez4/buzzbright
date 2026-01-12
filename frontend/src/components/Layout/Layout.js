@@ -19,7 +19,11 @@ const Layout = ({ children }) => {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ 
+      display: 'flex', 
+      height: '100vh', // Full viewport height
+      overflow: 'hidden' // Prevent body from scrolling
+    }}>
       <Header onMenuClick={handleDrawerToggle} drawerOpen={drawerOpen} />
       
       <Sidebar 
@@ -33,6 +37,8 @@ const Layout = ({ children }) => {
           flexGrow: 1,
           p: 3,
           mt: 8, // Account for AppBar height
+          height: 'calc(100vh - 64px)', // Full viewport height minus AppBar
+          overflowY: 'auto', // Enable vertical scrolling
           width: { sm: drawerOpen ? `calc(100% - 240px)` : '100%' },
           ml: { sm: drawerOpen ? '240px' : 0 },
           transition: theme.transitions.create(['width', 'margin'], {

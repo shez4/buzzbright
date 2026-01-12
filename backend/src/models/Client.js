@@ -22,20 +22,21 @@ const clientSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  alternatePhone: {
-    type: String,
-    trim: true
-  },
   company: {
     type: String,
     trim: true
   },
-  addresses: [{
-    type: {
-      type: String,
-      enum: ['home', 'office', 'other'],
-      default: 'home'
-    },
+  type: {
+    type: String,
+    enum: ['residential', 'commercial'],
+    default: 'residential'
+  },
+  status: {
+    type: String,
+    enum: ['active', 'inactive', 'prospect'],
+    default: 'prospect'
+  },
+  address: {
     street: {
       type: String,
       required: true
@@ -52,61 +53,87 @@ const clientSchema = new mongoose.Schema({
       type: String,
       required: true
     },
-    isDefault: {
-      type: Boolean,
-      default: false
-    },
-    accessInstructions: String,
-    keyLocation: String
-  }],
-  preferences: {
-    cleaningFrequency: {
+    country: {
       type: String,
-      enum: ['weekly', 'biweekly', 'monthly', 'one-time', 'custom'],
-      default: 'weekly'
-    },
+      default: 'USA'
+    }
+  },
+  billingAddress: {
+    street: String,
+    city: String,
+    state: String,
+    zipCode: String,
+    country: {
+      type: String,
+      default: 'USA'
+    }
+  },
+  emergencyContact: {
+    name: String,
+    phone: String,
+    relationship: String
+  },
+  servicePreferences: {
     preferredDays: [{
       type: String,
       enum: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
     }],
     preferredTime: {
       type: String,
-      enum: ['morning', 'afternoon', 'evening', 'flexible']
+      enum: ['morning', 'afternoon', 'evening', 'flexible'],
+      default: 'flexible'
     },
-    specialInstructions: String,
-    petInfo: String,
-    allergyInfo: String
+    accessInstructions: String,
+    specialInstructions: String
   },
   paymentInfo: {
-    preferredMethod: {
+    method: {
       type: String,
-      enum: ['cash', 'check', 'credit_card', 'bank_transfer'],
+      enum: ['cash', 'check', 'credit_card', 'bank_transfer', 'invoice'],
       default: 'credit_card'
     },
-    billingAddress: {
-      street: String,
-      city: String,
-      state: String,
-      zipCode: String
+    terms: {
+      type: String,
+      enum: ['immediate', 'net_15', 'net_30', 'upon_completion'],
+      default: 'immediate'
+    },
+    creditLimit: {
+      type: Number,
+      default: 500
     }
   },
-  status: {
-    type: String,
-    enum: ['active', 'inactive', 'suspended'],
-    default: 'active'
+  stats: {
+    totalPaid: {
+      type: Number,
+      default: 0
+    },
+    totalJobs: {
+      type: Number,
+      default: 0
+    },
+    rating: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5
+    },
+    lastServiceDays: {
+      type: Number,
+      default: 0
+    },
+    outstandingBalance: {
+      type: Number,
+      default: 0
+    }
   },
   notes: String,
   tags: [String],
-  totalJobsCompleted: {
-    type: Number,
-    default: 0
-  },
-  totalRevenue: {
-    type: Number,
-    default: 0
-  },
   lastServiceDate: Date,
-  nextServiceDate: Date
+  nextServiceDate: Date,
+  dateAdded: {
+    type: Date,
+    default: Date.now
+  }
 }, {
   timestamps: true
 });

@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { Box } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 import { AuthContext } from './context/AuthContext';
 import Layout from './components/Layout/Layout';
@@ -19,12 +20,14 @@ import LoadingSpinner from './components/Common/LoadingSpinner';
 function App() {
   const { user, loading } = useContext(AuthContext);
 
+  console.log('App render - User:', user, 'Loading:', loading);
+
   if (loading) {
     return <LoadingSpinner />;
   }
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
       {user ? (
         <Layout>
           <Routes>
@@ -47,7 +50,7 @@ function App() {
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       )}
-    </Box>
+    </LocalizationProvider>
   );
 }
 

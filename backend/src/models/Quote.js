@@ -111,16 +111,6 @@ const quoteSchema = new mongoose.Schema({
       },
       reason: String
     },
-    tax: {
-      rate: {
-        type: Number,
-        default: 0
-      },
-      amount: {
-        type: Number,
-        default: 0
-      }
-    },
     total: {
       type: Number,
       required: true
@@ -260,13 +250,8 @@ quoteSchema.pre('save', function(next) {
   
   const afterDiscount = this.pricing.subtotal - this.pricing.discount.amount;
   
-  // Calculate tax
-  if (this.pricing.tax.rate > 0) {
-    this.pricing.tax.amount = (afterDiscount * this.pricing.tax.rate) / 100;
-  }
-  
   // Calculate total
-  this.pricing.total = afterDiscount + this.pricing.tax.amount;
+  this.pricing.total = afterDiscount;
   
   next();
 });

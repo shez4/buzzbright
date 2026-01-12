@@ -1,35 +1,33 @@
 const express = require('express');
-const { auth, managerOrAdmin } = require('../middleware/authMiddleware');
+const { auth, managerOrAdmin, adminOnly } = require('../middleware/authMiddleware');
+const {
+  getAllClients,
+  getClientById,
+  createClient,
+  updateClient,
+  deleteClient,
+  getClientStats,
+  updateClientStatus
+} = require('../controllers/clientController');
 
 const router = express.Router();
 
 // Client management routes
-router.get('/', auth, (req, res) => {
-  res.json({ message: 'Client routes - Get all clients' });
-});
+router.get('/', auth, getAllClients);
+router.get('/stats', auth, getClientStats);
+router.get('/:id', auth, getClientById);
+router.post('/', [auth, managerOrAdmin], createClient);
+router.put('/:id', [auth, managerOrAdmin], updateClient);
+router.patch('/:id/status', [auth, managerOrAdmin], updateClientStatus);
+router.delete('/:id', [auth, adminOnly], deleteClient);
 
-router.get('/:id', auth, (req, res) => {
-  res.json({ message: `Client routes - Get client ${req.params.id}` });
-});
-
-router.post('/', [auth, managerOrAdmin], (req, res) => {
-  res.json({ message: 'Client routes - Create new client' });
-});
-
-router.put('/:id', [auth, managerOrAdmin], (req, res) => {
-  res.json({ message: `Client routes - Update client ${req.params.id}` });
-});
-
-router.delete('/:id', [auth, managerOrAdmin], (req, res) => {
-  res.json({ message: `Client routes - Delete client ${req.params.id}` });
-});
-
+// Related data routes (placeholders for future integration)
 router.get('/:id/jobs', auth, (req, res) => {
-  res.json({ message: `Client routes - Get jobs for client ${req.params.id}` });
+  res.json({ message: `Jobs for client ${req.params.id} - Integration pending` });
 });
 
 router.get('/:id/quotes', auth, (req, res) => {
-  res.json({ message: `Client routes - Get quotes for client ${req.params.id}` });
+  res.json({ message: `Quotes for client ${req.params.id} - Integration pending` });
 });
 
 module.exports = router;
