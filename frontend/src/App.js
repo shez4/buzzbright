@@ -1,8 +1,11 @@
 import React, { useContext } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { ThemeProvider } from '@mui/material/styles';
+import { CssBaseline } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
+import theme from './theme/theme';
 import { AuthContext } from './context/AuthContext';
 import Layout from './components/Layout/Layout';
 import Login from './pages/Auth/Login';
@@ -27,30 +30,33 @@ function App() {
   }
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      {user ? (
-        <Layout>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        {user ? (
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/jobs/*" element={<Jobs />} />
+              <Route path="/staff/*" element={<Staff />} />
+              <Route path="/timesheets/*" element={<Timesheets />} />
+              <Route path="/quotes/*" element={<Quotes />} />
+              <Route path="/clients/*" element={<Clients />} />
+              <Route path="/inventory/*" element={<Inventory />} />
+              <Route path="/notifications" element={<Notifications />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </Layout>
+        ) : (
           <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/jobs/*" element={<Jobs />} />
-            <Route path="/staff/*" element={<Staff />} />
-            <Route path="/timesheets/*" element={<Timesheets />} />
-            <Route path="/quotes/*" element={<Quotes />} />
-            <Route path="/clients/*" element={<Clients />} />
-            <Route path="/inventory/*" element={<Inventory />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
-        </Layout>
-      ) : (
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
-      )}
-    </LocalizationProvider>
+        )}
+      </LocalizationProvider>
+    </ThemeProvider>
   );
 }
 

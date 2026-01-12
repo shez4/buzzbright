@@ -10,6 +10,8 @@ import {
   Badge,
   Box,
   Tooltip,
+  InputBase,
+  alpha,
   useTheme
 } from '@mui/material';
 import {
@@ -17,7 +19,9 @@ import {
   AccountCircle,
   Notifications,
   Settings,
-  Logout
+  Logout,
+  Search as SearchIcon,
+  CleaningServices
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
@@ -27,6 +31,7 @@ const Header = ({ onMenuClick, drawerOpen }) => {
   const navigate = useNavigate();
   const { user, logout } = useContext(AuthContext);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -50,9 +55,18 @@ const Header = ({ onMenuClick, drawerOpen }) => {
     navigate('/notifications');
   };
 
+  const handleSearch = (event) => {
+    if (event.key === 'Enter' && searchQuery.trim()) {
+      // Implement global search functionality
+      console.log('Searching for:', searchQuery);
+      // navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
   return (
     <AppBar
       position="fixed"
+      elevation={0}
       sx={{
         width: drawerOpen ? `calc(100% - 240px)` : '100%',
         ml: drawerOpen ? '240px' : 0,
@@ -60,9 +74,12 @@ const Header = ({ onMenuClick, drawerOpen }) => {
           easing: theme.transitions.easing.sharp,
           duration: theme.transitions.duration.leavingScreen,
         }),
+        backgroundColor: theme.palette.background.paper,
+        color: theme.palette.text.primary,
+        borderBottom: `1px solid ${theme.palette.divider}`,
       }}
     >
-      <Toolbar>
+      <Toolbar sx={{ height: 64 }}>
         <IconButton
           color="inherit"
           aria-label="open drawer"
@@ -73,14 +90,73 @@ const Header = ({ onMenuClick, drawerOpen }) => {
           <MenuIcon />
         </IconButton>
         
-        <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-          BuzzBright Cleaning
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', mr: 3 }}>
+          <CleaningServices sx={{ mr: 1, color: 'primary.main' }} />
+          <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 700, color: 'primary.main' }}>
+            BuzzBright
+          </Typography>
+        </Box>
+
+        {/* Global Search */}
+        <Box
+          sx={{
+            position: 'relative',
+            borderRadius: theme.shape.borderRadius,
+            backgroundColor: alpha(theme.palette.primary.main, 0.05),
+            border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+            '&:hover': {
+              backgroundColor: alpha(theme.palette.primary.main, 0.08),
+            },
+            marginRight: theme.spacing(2),
+            marginLeft: 0,
+            width: '100%',
+            maxWidth: 400,
+            [theme.breakpoints.up('sm')]: {
+              marginLeft: theme.spacing(3),
+              width: 'auto',
+            },
+          }}
+        >
+          <Box
+            sx={{
+              padding: theme.spacing(0, 2),
+              height: '100%',
+              position: 'absolute',
+              pointerEvents: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <SearchIcon sx={{ color: 'text.secondary' }} />
+          </Box>
+          <InputBase
+            placeholder="Search clients, jobs, quotes..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyPress={handleSearch}
+            inputProps={{ 'aria-label': 'search' }}
+            sx={{
+              color: 'inherit',
+              '& .MuiInputBase-input': {
+                padding: theme.spacing(1, 1, 1, 0),
+                paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+                transition: theme.transitions.create('width'),
+                width: '100%',
+                [theme.breakpoints.up('md')]: {
+                  width: '20ch',
+                },
+              },
+            }}
+          />
+        </Box>
+
+        <Box sx={{ flexGrow: 1 }} />
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Tooltip title="Notifications">
             <IconButton color="inherit" onClick={handleNotifications}>
-              <Badge badgeContent={0} color="error">
+              <Badge badgeContent={3} color="error">
                 <Notifications />
               </Badge>
             </IconButton>
@@ -92,7 +168,15 @@ const Header = ({ onMenuClick, drawerOpen }) => {
               onClick={handleProfileMenuOpen}
               sx={{ ml: 1 }}
             >
-              <Avatar sx={{ width: 32, height: 32 }}>
+              <Avatar 
+                sx={{ 
+                  width: 36, 
+                  height: 36, 
+                  bgcolor: 'primary.main',
+                  fontSize: '0.875rem',
+                  fontWeight: 600
+                }}
+              >
                 {user?.firstName?.[0]}{user?.lastName?.[0]}
               </Avatar>
             </IconButton>

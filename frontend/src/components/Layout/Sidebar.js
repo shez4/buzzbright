@@ -10,7 +10,8 @@ import {
   Box,
   Typography,
   Avatar,
-  useTheme
+  useTheme,
+  alpha
 } from '@mui/material';
 import {
   Dashboard,
@@ -21,7 +22,10 @@ import {
   Contacts,
   Inventory,
   Notifications,
-  AccountCircle
+  AccountCircle,
+  CleaningServices,
+  Analytics,
+  Business
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
@@ -37,11 +41,12 @@ const Sidebar = ({ open, onClose }) => {
   const menuItems = [
     { text: 'Dashboard', icon: <Dashboard />, path: '/dashboard', roles: ['admin', 'manager', 'staff'] },
     { text: 'Jobs', icon: <Work />, path: '/jobs', roles: ['admin', 'manager', 'staff'] },
+    { text: 'Clients', icon: <Contacts />, path: '/clients', roles: ['admin', 'manager'] },
+    { text: 'Quotes', icon: <RequestQuote />, path: '/quotes', roles: ['admin', 'manager'] },
     { text: 'Staff', icon: <People />, path: '/staff', roles: ['admin', 'manager'] },
     { text: 'Timesheets', icon: <AccessTime />, path: '/timesheets', roles: ['admin', 'manager', 'staff'] },
-    { text: 'Quotes', icon: <RequestQuote />, path: '/quotes', roles: ['admin', 'manager'] },
-    { text: 'Clients', icon: <Contacts />, path: '/clients', roles: ['admin', 'manager'] },
     { text: 'Inventory', icon: <Inventory />, path: '/inventory', roles: ['admin', 'manager'] },
+    { text: 'Reports', icon: <Analytics />, path: '/reports', roles: ['admin', 'manager'] },
     { text: 'Notifications', icon: <Notifications />, path: '/notifications', roles: ['admin', 'manager', 'staff'] },
   ];
 
@@ -55,69 +60,134 @@ const Sidebar = ({ open, onClose }) => {
   };
 
   const drawer = (
-    <Box>
-      {/* User Info Section */}
-      <Box sx={{ p: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Avatar sx={{ bgcolor: 'primary.main' }}>
-          {user?.firstName?.[0]}{user?.lastName?.[0]}
-        </Avatar>
-        <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-          <Typography variant="subtitle1" noWrap>
-            {user?.firstName} {user?.lastName}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" noWrap>
-            {user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1)}
-          </Typography>
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      {/* Header */}
+      <Box 
+        sx={{ 
+          p: 3, 
+          textAlign: 'center',
+          borderBottom: `1px solid ${theme.palette.divider}`,
+          backgroundColor: alpha(theme.palette.primary.main, 0.02)
+        }}
+      >
+        <CleaningServices 
+          sx={{ 
+            fontSize: 40, 
+            color: 'primary.main', 
+            mb: 1 
+          }} 
+        />
+        <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main' }}>
+          BuzzBright
+        </Typography>
+        <Typography variant="caption" color="text.secondary">
+          Cleaning Management
+        </Typography>
+      </Box>
+
+      {/* User Info */}
+      <Box sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Avatar 
+            sx={{ 
+              bgcolor: 'primary.main', 
+              width: 40, 
+              height: 40,
+              fontSize: '0.875rem',
+              fontWeight: 600
+            }}
+          >
+            {user?.firstName?.[0]}{user?.lastName?.[0]}
+          </Avatar>
+          <Box sx={{ overflow: 'hidden' }}>
+            <Typography variant="subtitle2" noWrap sx={{ fontWeight: 600 }}>
+              {user?.firstName} {user?.lastName}
+            </Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ textTransform: 'capitalize' }}>
+              {user?.role}
+            </Typography>
+          </Box>
         </Box>
       </Box>
       
-      <Divider />
-      
       {/* Navigation Menu */}
-      <List>
+      <List sx={{ flex: 1, py: 1 }}>
         {filteredMenuItems.map((item) => (
-          <ListItem key={item.text} disablePadding>
+          <ListItem key={item.text} disablePadding sx={{ px: 1, mb: 0.5 }}>
             <ListItemButton
               selected={location.pathname.startsWith(item.path)}
               onClick={() => handleNavigation(item.path)}
               sx={{
-                minHeight: 48,
+                minHeight: 44,
+                borderRadius: 2,
+                mx: 1,
                 '&.Mui-selected': {
-                  backgroundColor: theme.palette.primary.main + '20',
+                  backgroundColor: alpha(theme.palette.primary.main, 0.12),
+                  color: theme.palette.primary.main,
                   '&:hover': {
-                    backgroundColor: theme.palette.primary.main + '30',
+                    backgroundColor: alpha(theme.palette.primary.main, 0.16),
                   },
+                },
+                '&:hover': {
+                  backgroundColor: alpha(theme.palette.action.hover, 0.04),
                 },
               }}
             >
               <ListItemIcon
                 sx={{
                   minWidth: 0,
-                  mr: 3,
+                  mr: 2.5,
                   justifyContent: 'center',
                   color: location.pathname.startsWith(item.path) 
                     ? theme.palette.primary.main 
-                    : 'inherit',
+                    : theme.palette.text.secondary,
                 }}
               >
                 {item.icon}
               </ListItemIcon>
-              <ListItemText primary={item.text} />
+              <ListItemText 
+                primary={item.text} 
+                primaryTypographyProps={{
+                  fontSize: '0.9rem',
+                  fontWeight: location.pathname.startsWith(item.path) ? 600 : 400
+                }}
+              />
             </ListItemButton>
           </ListItem>
         ))}
       </List>
       
-      <Divider />
-      
       {/* Profile Section */}
-      <List>
-        <ListItem disablePadding>
-          <ListItemButton onClick={() => handleNavigation('/profile')}>
-            <ListItemIcon>
+      <List sx={{ mt: 'auto' }}>
+        <Divider sx={{ mx: 2, mb: 1 }} />
+        <ListItem disablePadding sx={{ px: 1 }}>
+          <ListItemButton
+            onClick={() => handleNavigation('/profile')}
+            sx={{
+              minHeight: 44,
+              borderRadius: 2,
+              mx: 1,
+              '&:hover': {
+                backgroundColor: alpha(theme.palette.action.hover, 0.04),
+              },
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: 2.5,
+                justifyContent: 'center',
+                color: theme.palette.text.secondary,
+              }}
+            >
               <AccountCircle />
             </ListItemIcon>
-            <ListItemText primary="Profile" />
+            <ListItemText 
+              primary="Profile" 
+              primaryTypographyProps={{
+                fontSize: '0.9rem'
+              }}
+            />
           </ListItemButton>
         </ListItem>
       </List>
